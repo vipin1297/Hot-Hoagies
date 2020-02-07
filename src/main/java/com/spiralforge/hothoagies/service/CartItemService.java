@@ -1,13 +1,15 @@
 package com.spiralforge.hothoagies.service;
 
-import com.spiralforge.hothoagies.dto.OrderRequestDto;
+import java.util.List;
+
+import com.spiralforge.hothoagies.entity.CartItem;
 import com.spiralforge.hothoagies.entity.OrderDetail;
 import com.spiralforge.hothoagies.entity.User;
 
 /**
  * Cart Service to handle crud operation of order details. 
  */
-public interface CartService {
+public interface CartItemService {
 	
 	/**
 	 * This method used to save order detail information.
@@ -16,6 +18,10 @@ public interface CartService {
 	 * @param orderRequestDto
 	 * @return
 	 */
-	OrderDetail saveOrderDetail(User user, OrderRequestDto orderRequestDto);
+	void saveCartItem(User user, OrderDetail orderDetail, List<CartItem> cartItemList);
+
+	List<CartItem> getCartItemByUser(User user);
+
+	List<CartItem>  saveCartItems(List<CartItem> cartItemList);
 
 }

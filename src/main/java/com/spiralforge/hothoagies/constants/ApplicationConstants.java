@@ -13,6 +13,10 @@ public class ApplicationConstants {
 	public static final String FOOD_ITEMLIST_EMPTY_MESSAGE = "Sorry no items found for that category";
 	public static final String FOOD_ITEMLIST_SUCCESS_MESSAGE = "List of items are being displayed";
 	public static final String CONFIRMED_STATUS = "CONFIRMED";
+
 	public static final String PREFERENCE_LIST_SUCCESS_MESSAGE = "The list of items added by the user is displayed";
 	public static final String PREFERENCE_LIST_EMPTY_MESSAGE = "There are no preferred items in your list";
+
+	public static final String ORDER_NOTFOUND_MESSAGE = "No orders found";
+
 }

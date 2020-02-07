@@ -9,6 +9,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,21 +19,23 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CartItem {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long cartItemId;
 	private Integer quantity;
-	
+
 	@OneToOne
 	@JoinColumn(name="food_item_id")
 	private FoodItem item;
-	
+
+	@JsonIgnore
 	@ManyToOne
-	@JoinColumn(name="user_id")
+	@JoinColumn(name = "user_id")
 	private User user;
-	
+
+	@JsonIgnore
 	@ManyToOne
-	@JoinColumn(name="order_detail_id")
+	@JoinColumn(name = "order_detail_id", nullable = true)
 	private OrderDetail orderDetail;
 }

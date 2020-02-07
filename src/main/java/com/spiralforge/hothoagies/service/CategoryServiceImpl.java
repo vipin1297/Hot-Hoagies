@@ -56,8 +56,10 @@ public class CategoryServiceImpl implements CategoryService {
 			logger.error("Categories not found");
 			throw new CategoriesNotFoundException(ApplicationConstants.CATEGORY_NOT_FOUND_EXCEPTION);
 		}
+
 		List<CategoryResponseDto> categoryResponseDto = new ArrayList<>();
 		categoryList.forEach(list -> {
+
 			CategoryResponseDto responseDto = new CategoryResponseDto();
 			BeanUtils.copyProperties(list, responseDto);
 			categoryResponseDto.add(responseDto);

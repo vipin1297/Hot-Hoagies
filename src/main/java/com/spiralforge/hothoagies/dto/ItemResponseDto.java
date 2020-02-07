@@ -7,8 +7,9 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class OrderRequestDto implements Serializable{
+public class ItemResponseDto implements Serializable{
 	
-	private String paymentMode;
-	private String upiId;
+	private Long itemId;
+	private String itemName;
+	private Integer quantity;
 }
