@@ -2,6 +2,8 @@ package com.spiralforge.hothoagies.controller;
 
 import static org.junit.Assert.assertEquals;
 
+import java.time.LocalTime;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,12 +51,14 @@ public class UserControllerTest {
 		
 		orderDetail=new OrderDetail();
 		orderDetail.setOrderDetailId(1L);
+		orderDetail.setOrderTime(LocalTime.now());
 	}
 
 	@Test
 	public void testPlaceOrderPositive() throws ValidationFailedException {
 		Long userId=1L;
 		Mockito.when(userService.placeOrder(userId, orderRequestDto)).thenReturn(orderDetail);
+		Mockito.when(userService.getEta(orderDetail)).thenReturn(LocalTime.now());
 		OrderResponseDto response = userController.placeOrder(userId, orderRequestDto).getBody();
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 	}

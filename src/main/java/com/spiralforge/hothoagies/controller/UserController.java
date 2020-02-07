@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.spiralforge.hothoagies.dto.OrderDetailDto;
 import com.spiralforge.hothoagies.dto.OrderRequestDto;
 import com.spiralforge.hothoagies.dto.OrderResponseDto;
 import com.spiralforge.hothoagies.entity.OrderDetail;
@@ -94,21 +95,20 @@ public class UserController {
 	 * @throws UserNotFoundException expose a message when user is not found
 	 */
 	@GetMapping("orders/{orderId}")
-	public ResponseEntity<OrderResponseDto> getOrder(@PathVariable("orderId") Long orderId) {
+	public ResponseEntity<OrderDetailDto> getOrder(@PathVariable("orderId") Long orderId) {
 
-		OrderResponseDto orderResponseDto = new OrderResponseDto();
+		OrderDetailDto orderDetailDto = new OrderDetailDto();
 		OrderDetail orderDetail = userService.getOrder(orderId);
 		logger.info("place order started");
 		if (Objects.isNull(orderDetail)) {
-			orderResponseDto.setStatusCode(ApiConstant.NO_CONTENT_CODE);
-			orderResponseDto.setMessage(ApiConstant.NO_ELEMENT_FOUND);
-			return new ResponseEntity<>(orderResponseDto, HttpStatus.NO_CONTENT);
+			orderDetailDto.setStatusCode(ApiConstant.NO_CONTENT_CODE);
+			orderDetailDto.setMessage(ApiConstant.NO_ELEMENT_FOUND);
+			return new ResponseEntity<>(orderDetailDto, HttpStatus.NO_CONTENT);
 		} else {
-			orderResponseDto.setOrderId(orderDetail.getOrderDetailId());
-			orderResponseDto.setEta(userService.getEta(orderDetail));
-			orderResponseDto.setStatusCode(ApiConstant.SUCCESS_CODE);
-			orderResponseDto.setMessage(ApiConstant.SUCCESS);
-			return new ResponseEntity<>(orderResponseDto, HttpStatus.OK);
+			BeanUtils.copyProperties(orderDetail, orderDetailDto);
+			orderDetailDto.setStatusCode(ApiConstant.SUCCESS_CODE);
+			orderDetailDto.setMessage(ApiConstant.SUCCESS);
+			return new ResponseEntity<>(orderDetailDto, HttpStatus.OK);
 
 		}
 	}
