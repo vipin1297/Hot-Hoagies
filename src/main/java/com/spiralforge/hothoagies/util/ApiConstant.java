@@ -31,6 +31,7 @@ public class ApiConstant {
 	public static final String INVALID_USER = "User doesn't exist";
 	public static final String ITEM_NOT_FOUND = "Item is not selected";
 	public static final String INVALID_UPI = "Please enter valid upi id";
-	public static final String INVALID_ITEM = "Please order valid item only";
+	public static final String INVALID_ITEM = "Cart  only";
+	public static final String INVALID_PAYMENT = "Please select a valid payment mode";
 
 }

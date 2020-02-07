@@ -28,6 +28,10 @@ public class CartItem {
 	private Item item;
 	
 	@ManyToOne
-	@JoinColumn(name="cart_id")
-	private Cart cart;
+	@JoinColumn(name="user_id")
+	private User user;
+	
+	@ManyToOne
+	@JoinColumn(name="order_detail_id")
+	private OrderDetail orderDetail;
 }

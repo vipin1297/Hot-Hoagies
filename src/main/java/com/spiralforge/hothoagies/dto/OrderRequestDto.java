@@ -8,7 +8,8 @@ import lombok.Setter;
 @Setter
 @Getter
 public class OrderRequestDto implements Serializable{
-	private Integer orderId;
-	private Integer statusCode;
-	private String message;
+	
+	private Long cartId;
+	private String paymentMode;
+
 }
