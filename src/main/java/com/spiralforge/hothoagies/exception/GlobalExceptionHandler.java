@@ -17,5 +17,13 @@ public class GlobalExceptionHandler {
 		responseDto.setStatusCode(ApplicationConstants.NOTFOUND_CODE);
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
 	}
+	
+	@ExceptionHandler(FoodItemListEmptyException.class)
+	public ResponseEntity<ResponseDto> foodItemListEmptyException() {
+		ResponseDto responseDto = new ResponseDto();
+		responseDto.setMessage(ApplicationConstants.FOOD_ITEMLIST_EMPTY_MESSAGE);
+		responseDto.setStatusCode(ApplicationConstants.NOTFOUND_CODE);
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDto);
+	}
 
 }

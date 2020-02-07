@@ -25,7 +25,7 @@ public class CartItem {
 	
 	@OneToOne
 	@JoinColumn(name="item_id")
-	private Item item;
+	private FoodItem item;
 	
 	@ManyToOne
 	@JoinColumn(name="cart_id")

@@ -15,11 +15,11 @@ import lombok.Setter;
 @Table
 @Getter
 @Setter
-public class Item {
+public class FoodItem {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long itemId;
-	private String itemName;
+	private Long foodItemId;
+	private String foodItemName;
 	private Double price;
 	
 	@ManyToOne
