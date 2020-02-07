@@ -73,7 +73,8 @@ public class OrderDetailServiceImpl implements OrderDetailService {
 	 * @param orderRequestDto
 	 * @return total price
 	 */
-	private Double getTotalPrice(List<CartItem> cartItems) {
+	@Override
+	public Double getTotalPrice(List<CartItem> cartItems) {
 		return cartItems.stream().mapToDouble(ordeItem ->Utility.getTotalPrice(ordeItem.getQuantity(), ordeItem.getItem().getPrice())).sum();
 	
 	}

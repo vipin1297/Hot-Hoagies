@@ -44,7 +44,6 @@ public class CategoryServiceImpl implements CategoryService{
 			logger.error("Categories not found");
 			throw new CategoriesNotFoundException(ApplicationConstants.CATEGORY_NOT_FOUND_EXCEPTION);
 		}
-		else {
 		List<CategoryResponseDto> categoryResponseDto=new ArrayList<>();
 		categoryList.forEach(list->{
 			CategoryResponseDto responseDto = new CategoryResponseDto();
@@ -53,7 +52,6 @@ public class CategoryServiceImpl implements CategoryService{
 		});
 		logger.info("Got the list of categories");
 		return categoryResponseDto;
-	}
 	}
 
 }
