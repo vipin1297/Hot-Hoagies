@@ -34,5 +34,7 @@ public interface UserService {
 	Optional<User> getUserByUserId(Long userId);
 
 	LocalTime getEta(OrderDetail orderDetail);
+
+	OrderDetail getOrder(Long orderId);
 	
 }

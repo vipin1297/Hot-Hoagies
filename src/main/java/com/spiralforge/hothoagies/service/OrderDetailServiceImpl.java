@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -75,5 +76,13 @@ public class OrderDetailServiceImpl implements OrderDetailService {
 	private Double getTotalPrice(List<CartItem> cartItems) {
 		return cartItems.stream().mapToDouble(ordeItem ->Utility.getTotalPrice(ordeItem.getQuantity(), ordeItem.getItem().getPrice())).sum();
 	
+	}
+
+	/**
+	 * 
+	 */
+	@Override
+	public Optional<OrderDetail> getOrder(Long orderId) {
+		return orderDetailRepository.findById(orderId);
 	}
 }

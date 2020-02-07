@@ -86,5 +86,14 @@ public class UserServiceImpl implements UserService {
 		
 	}
 
+	@Override
+	public OrderDetail getOrder(Long orderId) {
+		
+		Optional<OrderDetail> orderDetail=orderDetailService.getOrder(orderId);
+		if(orderDetail.isPresent())
+			return orderDetail.get();
+		return null;
+	}
+
 
 }
