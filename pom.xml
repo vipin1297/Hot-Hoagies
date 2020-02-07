@@ -81,7 +81,12 @@
 			<version>2.9.2</version>
 		</dependency>
 
-
+<distributionManagement>
+<snapshotRepository>
+<id>nexus</id>
+<url>http://3.6.86.109:8081/nexus/content/repositories/snapshots</url>
+</snapshotRepository>
+</distributionManagement>
 	</dependencies>
 
 	<build>
