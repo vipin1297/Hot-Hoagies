@@ -43,11 +43,11 @@ public class LoginController {
 	@PostMapping
 	public ResponseEntity<LoginResponseDto> checkLogin(@Valid @RequestBody LoginRequestDto loginRequestDto)
 			throws UserNotFoundException {
-		log.info("For checking whether the person is a manager or not");
-		LoginResponseDto userResponse = loginService.checkLogin(loginRequestDto);
+		log.info("For checking whether the person is staff or a customer");
+		LoginResponseDto loginResponse = loginService.checkLogin(loginRequestDto);
 		log.info(ApplicationConstants.LOGIN_SUCCESSMESSAGE);
-		userResponse.setStatusCode(ApplicationConstants.SUCCESS_CODE);
-		userResponse.setMessage(ApplicationConstants.LOGIN_SUCCESSMESSAGE);
-		return new ResponseEntity<>(userResponse, HttpStatus.OK);
+		loginResponse.setStatusCode(ApplicationConstants.SUCCESS_CODE);
+		loginResponse.setMessage(ApplicationConstants.LOGIN_SUCCESSMESSAGE);
+		return new ResponseEntity<>(loginResponse, HttpStatus.OK);
 	}
 }
