@@ -15,8 +15,11 @@ import com.spiralforge.hothoagies.constants.ApplicationConstants;
 import com.spiralforge.hothoagies.dto.CartItemDetailsDto;
 import com.spiralforge.hothoagies.dto.CartRequestDto;
 import com.spiralforge.hothoagies.dto.CartResponseDto;
+import com.spiralforge.hothoagies.dto.ItemRequestDto;
+import com.spiralforge.hothoagies.dto.ItemResponseDto;
 import com.spiralforge.hothoagies.dto.OrderDetailResponseDto;
 import com.spiralforge.hothoagies.dto.OrderRequestDto;
+import com.spiralforge.hothoagies.entity.CartItem;
 import com.spiralforge.hothoagies.entity.Item;
 import com.spiralforge.hothoagies.entity.OrderDetail;
 import com.spiralforge.hothoagies.entity.User;
@@ -38,13 +41,16 @@ import com.spiralforge.hothoagies.util.Utility;
 @Service
 public class UserServiceImpl implements UserService {
 
-	@Autowired
-	OrderDetailRepository orderDetailRepository;
-
 	Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
 	@Autowired
 	private OrderDetailService orderDetailService;
+
+	@Autowired
+	private CartItemService cartItemService;
+
+	@Autowired
+	OrderDetailRepository orderDetailRepository;
 
 	@Autowired
 	UserRepository userRepository;
@@ -136,16 +142,52 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<CartResponseDto> addToCart(CartRequestDto cartRequestDto) {
-		cartRequestDto.getItems().forEach(item -> {
-			Long itemId = item.getItemId();
-			Optional<Item> optionalItem = itemRepository.findById(itemId);
-			Double itemPrice = optionalItem.get().getPrice();
-			Double priceCalculation = Utility.getTotalPriceInCart(cartRequestDto.getQuantity(), itemPrice);
-		});
+	public LocalTime getEta(OrderDetail orderDetail) {
+		return orderDetail.getOrderTime().plusHours(1);
+
+	}
+
+	@Override
+	public OrderDetail getOrder(Long orderId) {
+
+		Optional<OrderDetail> orderDetail = orderDetailService.getOrder(orderId);
+		if (orderDetail.isPresent())
+			return orderDetail.get();
 		return null;
 	}
 
-	
+	@Override
+	public CartResponseDto addToCart(Long userId, CartRequestDto cartRequestDto) {
+		CartResponseDto cartResponseDto = new CartResponseDto();
+		List<CartItem> cartItemList = new ArrayList<CartItem>();
+		List<CartItem> cartItemList1=null;
+		Optional<User> user = getUserByUserId(userId);
+		Double totalPrice=0D;
+		if (user.isPresent()) {
+			totalPrice=cartRequestDto.getItems().stream().mapToDouble(item -> {
+				CartItem cartItem = new CartItem();
+				Long itemId = item.getItemId();
+				Optional<Item> optionalItem = itemRepository.findById(itemId);
+				cartItem.setItem(optionalItem.get());
+				cartItem.setQuantity(item.getQuantity());
+				cartItem.setUser(user.get());
+				cartItemList.add(cartItem);
+				return Utility.getTotalPrice(item.getQuantity(), optionalItem.get().getPrice());
+			}).sum();
+			cartResponseDto.setTotalPrice(totalPrice);
+			
+			List<ItemResponseDto> itemList=new ArrayList<ItemResponseDto>();
+			cartItemList1=cartItemService.saveCartItems(cartItemList);
+			cartItemList1.stream().forEach(item->{
+				ItemResponseDto itemRequestDto = new ItemResponseDto();
+				BeanUtils.copyProperties(item.getItem(), itemRequestDto);
+				itemRequestDto.setQuantity(item.getQuantity());
+				itemList.add(itemRequestDto);
+			});
+			cartResponseDto.setItems(itemList);
+			
+		}
+		return cartResponseDto;
+	}
 
 }

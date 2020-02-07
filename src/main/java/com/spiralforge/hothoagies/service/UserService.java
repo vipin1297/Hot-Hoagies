@@ -43,5 +43,8 @@ public interface UserService {
 
 	LocalTime getEta(OrderDetail orderDetail);
 
-	public List<CartResponseDto> addToCart(CartRequestDto cartRequestDto);
+	OrderDetail getOrder(Long orderId);
+
+	CartResponseDto addToCart(Long userId, CartRequestDto cartRequestDto);
+	
 }

@@ -11,6 +11,5 @@ import lombok.Setter;
 @Setter
 public class CartRequestDto {
 
-	private List<Item> items;
-	private Integer quantity;
+	private List<ItemRequestDto> items;
 }

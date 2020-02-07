@@ -2,14 +2,14 @@ package com.spiralforge.hothoagies.dto;
 
 import lombok.Setter;
 
+import java.util.List;
+
 import lombok.Getter;
 
 @Getter
 @Setter
 public class CartResponseDto {
 
-	private Long itemId;
-	private String itemName;
-	private Integer quantity;
+	private List<ItemResponseDto> items;
 	private Double totalPrice;
 }

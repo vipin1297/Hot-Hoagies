@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.spiralforge.hothoagies.dto.CartRequestDto;
+import com.spiralforge.hothoagies.dto.CartResponseDto;
 import com.spiralforge.hothoagies.dto.OrderDetailResponseDto;
 import com.spiralforge.hothoagies.dto.OrderRequestDto;
 import com.spiralforge.hothoagies.dto.OrderResponseDto;
@@ -34,7 +36,7 @@ import com.spiralforge.hothoagies.util.OrderValidator;
  * @author Sri Keerthna.
  * @since 2020-02-07.
  */
-@RequestMapping("/users")
+@RequestMapping("/")
 @RestController
 @CrossOrigin(allowedHeaders = { "*", "*/" }, origins = { "*", "*/" })
 public class UserController {
@@ -43,6 +45,7 @@ public class UserController {
 	 * The Constant log.
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+	
 
 	@Autowired
 	private OrderValidator<Long, OrderRequestDto> orderValidator;
@@ -61,7 +64,7 @@ public class UserController {
 	 * @throws BeansException
 	 * @throws UserNotFoundException expose a message when user is not found
 	 */
-	@PostMapping("/{userId}/order")
+	@PostMapping("users/{userId}/order")
 	public ResponseEntity<OrderResponseDto> placeOrder(@PathVariable("userId") Long userId,
 			@RequestBody OrderRequestDto orderRequestDto) throws ValidationFailedException {
 
@@ -104,4 +107,40 @@ public class UserController {
 		return new ResponseEntity<>(orderDetailList, HttpStatus.OK);
 	}
 
+	/** @author Sujal
+	 * @since 2020-02-07
+	 * 
+	 *        Method is used to classify a user as a staff or customer
+	 * 
+	 * @param loginRequestDto which takes input as a mobile number
+	 * @return LoginResponseDto includes all particulars of the user
+	 * @throws BeansException
+	 * @throws UserNotFoundException expose a message when user is not found
+	 */
+	@GetMapping("orders/{orderId}")
+	public ResponseEntity<OrderResponseDto> getOrder(@PathVariable("orderId") Long orderId) {
+
+		OrderResponseDto orderResponseDto = new OrderResponseDto();
+		OrderDetail orderDetail = userService.getOrder(orderId);
+		logger.info("place order started");
+		if (Objects.isNull(orderDetail)) {
+			orderResponseDto.setStatusCode(ApiConstant.NO_CONTENT_CODE);
+			orderResponseDto.setMessage(ApiConstant.NO_ELEMENT_FOUND);
+			return new ResponseEntity<>(orderResponseDto, HttpStatus.NO_CONTENT);
+		} else {
+			orderResponseDto.setOrderId(orderDetail.getOrderDetailId());
+			orderResponseDto.setEta(userService.getEta(orderDetail));
+			orderResponseDto.setStatusCode(ApiConstant.SUCCESS_CODE);
+			orderResponseDto.setMessage(ApiConstant.SUCCESS);
+			return new ResponseEntity<>(orderResponseDto, HttpStatus.OK);
+
+		}
+	}
+	
+	
+	@PostMapping("users/{userId}/carts")
+	public ResponseEntity<CartResponseDto> addToCart(@PathVariable("userId") Long userId, @RequestBody CartRequestDto cartRequestDto) {
+		CartResponseDto cartResponseDto=userService.addToCart(userId, cartRequestDto);
+		return new ResponseEntity<>(cartResponseDto, HttpStatus.OK);
+	}	
 }

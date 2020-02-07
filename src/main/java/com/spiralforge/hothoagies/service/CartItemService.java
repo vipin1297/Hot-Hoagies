@@ -22,4 +22,6 @@ public interface CartItemService {
 
 	List<CartItem> getCartItemByUser(User user);
 
+	List<CartItem>  saveCartItems(List<CartItem> cartItemList);
+
 }

@@ -51,4 +51,9 @@ public class CartItemServiceImpl implements CartItemService {
 		return cartItemRepository.getCartItemByUser(user);
 	}
 
+	@Override
+	public List<CartItem> saveCartItems(List<CartItem> cartItemList) {
+		return cartItemRepository.saveAll(cartItemList);
+	}
+
 }
