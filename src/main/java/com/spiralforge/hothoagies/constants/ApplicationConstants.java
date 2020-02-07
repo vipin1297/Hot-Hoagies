@@ -10,4 +10,5 @@ public class ApplicationConstants {
 	public static final String LOGIN_SUCCESSMESSAGE = "Login Successful";
 	public static final String USER_NOTFOUND_MESSAGE = "Sorry!!! No user found";
 	public static final String CATEGORY_NOT_FOUND_EXCEPTION = "Categories not found";
+	public static final String CONFIRMED_STATUS = "CONFIRMED";
 }
