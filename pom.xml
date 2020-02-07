@@ -60,7 +60,7 @@
 		<dependency>
 			<groupId>org.codehaus.mojo</groupId>
 			<artifactId>sonar-maven-plugin</artifactId>
-			<version></version>
+			<version>3.6.0.1398</version>
 			<type>pom</type>
 		</dependency>
 		
