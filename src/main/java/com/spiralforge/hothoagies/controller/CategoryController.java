@@ -58,6 +58,18 @@ public class CategoryController {
 		return new ResponseEntity<>(categoryList, HttpStatus.OK);
 	}
 
+	/**
+	 * @author Muthu
+	 * 
+	 *         Method is used to get the list of all the food items available on a
+	 *         particular category
+	 * 
+	 * @param categoryId fetch the details of a category by a unique id
+	 * @return
+	 * @throws CategoriesNotFoundException which is thrown when no category is found
+	 * @throws FoodItemListEmptyException  which is thrown when the food list on a
+	 *                                     category is found empty
+	 */
 	@GetMapping("/{categoryId}/fooditems")
 	public ResponseEntity<FoodItemResponseDto> getFoodItemList(@PathVariable(name = "categoryId") long categoryId)
 			throws CategoriesNotFoundException, FoodItemListEmptyException {
@@ -65,11 +77,13 @@ public class CategoryController {
 		List<FoodItemList> foodItemList = categoryService.getFoodItemList(categoryId);
 		FoodItemResponseDto foodItemResponseDto = new FoodItemResponseDto();
 		if (!(foodItemList.isEmpty())) {
+			log.info(ApplicationConstants.FOOD_ITEMLIST_SUCCESS_MESSAGE);
 			foodItemResponseDto.setFoodItemList(foodItemList);
 			foodItemResponseDto.setStatusCode(ApplicationConstants.SUCCESS_CODE);
 			foodItemResponseDto.setMessage(ApplicationConstants.FOOD_ITEMLIST_SUCCESS_MESSAGE);
 			return new ResponseEntity<>(foodItemResponseDto, HttpStatus.OK);
 		}
+		log.info(ApplicationConstants.FOOD_ITEMLIST_EMPTY_MESSAGE);
 		foodItemResponseDto.setStatusCode(ApplicationConstants.NOTFOUND_CODE);
 		foodItemResponseDto.setMessage(ApplicationConstants.FOOD_ITEMLIST_EMPTY_MESSAGE);
 		return new ResponseEntity<>(foodItemResponseDto, HttpStatus.NOT_FOUND);

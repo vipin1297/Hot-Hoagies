@@ -66,6 +66,18 @@ public class CategoryServiceImpl implements CategoryService {
 		return categoryResponseDto;
 	}
 
+	/**
+	 * @author Muthu
+	 * 
+	 *         Method is used to get the list of all the food items available on a
+	 *         particular category
+	 * 
+	 * @param categoryId fetch the details of a category by a unique id
+	 * @return
+	 * @throws CategoriesNotFoundException which is thrown when no category is found
+	 * @throws FoodItemListEmptyException  which is thrown when the food list on a
+	 *                                     category is found empty
+	 */
 	@Override
 	public List<FoodItemList> getFoodItemList(long categoryId)
 			throws CategoriesNotFoundException, FoodItemListEmptyException {
@@ -74,7 +86,7 @@ public class CategoryServiceImpl implements CategoryService {
 			log.error(ApplicationConstants.CATEGORY_NOT_FOUND_EXCEPTION);
 			throw new CategoriesNotFoundException(ApplicationConstants.CATEGORY_NOT_FOUND_EXCEPTION);
 		}
-		List<FoodItem> foodItemDet = foodItemRepository.findByCategoryId(category);
+		List<FoodItem> foodItemDet = foodItemRepository.findByCategory(category.get());
 		if (foodItemDet.isEmpty()) {
 			log.error(ApplicationConstants.FOOD_ITEMLIST_EMPTY_MESSAGE);
 			throw new FoodItemListEmptyException(ApplicationConstants.FOOD_ITEMLIST_EMPTY_MESSAGE);
@@ -84,6 +96,7 @@ public class CategoryServiceImpl implements CategoryService {
 			FoodItemList foodItemDetails = new FoodItemList();
 			foodItemDetails.setFoodItemId(foodItem.getFoodItemId());
 			foodItemDetails.setFoodItemName(foodItem.getFoodItemName());
+			foodItemDetails.setPrice(foodItem.getPrice());
 			foodItemList.add(foodItemDetails);
 		});
 		return foodItemList;

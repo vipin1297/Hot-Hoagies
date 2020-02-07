@@ -5,8 +5,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class FoodItemList {
-	private Long foodItemId;
+public class PreferenceList {
+	private String categoryName;
+	private Long categoryId;
 	private String foodItemName;
-	private Double price;
+	private Long foodItemId;
 }

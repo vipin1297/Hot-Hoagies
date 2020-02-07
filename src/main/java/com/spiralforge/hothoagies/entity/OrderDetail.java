@@ -33,9 +33,4 @@ public class OrderDetail {
 	@OneToOne
 	@JoinColumn(name="user_id")
 	private User user;
-	
-	@OneToOne
-	@JoinColumn(name="cart_id")
-	private Cart cart;
-	
 }

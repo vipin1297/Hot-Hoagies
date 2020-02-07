@@ -15,11 +15,15 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.spiralforge.hothoagies.dto.CategoryResponseDto;
+import com.spiralforge.hothoagies.dto.FoodItemList;
+import com.spiralforge.hothoagies.dto.FoodItemResponseDto;
 import com.spiralforge.hothoagies.entity.Category;
 import com.spiralforge.hothoagies.exception.CategoriesNotFoundException;
+import com.spiralforge.hothoagies.exception.FoodItemListEmptyException;
 import com.spiralforge.hothoagies.service.CategoryService;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
@@ -41,6 +45,10 @@ public class CategoryControllerTest {
 	CategoryResponseDto categoryResponseDto = new CategoryResponseDto();
 	List<CategoryResponseDto> responseList = new ArrayList<>();
 
+	List<FoodItemList> foodItemList = null;
+	List<FoodItemList> foodItemList1 = null;
+	FoodItemList foodItem = null;
+
 	@Before
 	public void setUp() {
 		category.setCategoryId(1L);
@@ -48,6 +56,15 @@ public class CategoryControllerTest {
 		categoryList.add(category);
 		BeanUtils.copyProperties(categoryList, categoryResponseDto);
 		responseList.add(categoryResponseDto);
+
+		foodItemList1 = new ArrayList<>();
+
+		foodItemList = new ArrayList<>();
+		foodItem = new FoodItemList();
+		foodItem.setFoodItemId(1L);
+		foodItem.setFoodItemName("Pizza");
+		foodItem.setPrice(233.99);
+		foodItemList.add(foodItem);
 	}
 
 	@Test
@@ -56,5 +73,19 @@ public class CategoryControllerTest {
 		Mockito.when(categoryService.getCategoryList()).thenReturn(responseList);
 		ResponseEntity<List<CategoryResponseDto>> result = categoryController.getCategoryList();
 		assertEquals(200, result.getStatusCodeValue());
+	}
+
+	@Test
+	public void testFoodItemListPositive() throws CategoriesNotFoundException, FoodItemListEmptyException {
+		Mockito.when(categoryService.getFoodItemList(1L)).thenReturn(foodItemList);
+		ResponseEntity<FoodItemResponseDto> response = categoryController.getFoodItemList(1L);
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+	}
+
+	@Test
+	public void testFoodItemListNegative() throws CategoriesNotFoundException, FoodItemListEmptyException {
+		Mockito.when(categoryService.getFoodItemList(1L)).thenReturn(foodItemList1);
+		ResponseEntity<FoodItemResponseDto> response = categoryController.getFoodItemList(1L);
+		assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 	}
 }

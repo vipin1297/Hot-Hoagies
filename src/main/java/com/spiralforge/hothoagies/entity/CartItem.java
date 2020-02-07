@@ -24,10 +24,14 @@ public class CartItem {
 	private Integer quantity;
 	
 	@OneToOne
-	@JoinColumn(name="item_id")
+	@JoinColumn(name="food_item_id")
 	private FoodItem item;
 	
 	@ManyToOne
-	@JoinColumn(name="cart_id")
-	private Cart cart;
+	@JoinColumn(name="user_id")
+	private User user;
+	
+	@ManyToOne
+	@JoinColumn(name="order_detail_id")
+	private OrderDetail orderDetail;
 }
