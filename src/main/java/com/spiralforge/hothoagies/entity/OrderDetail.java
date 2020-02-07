@@ -31,6 +31,7 @@ public class OrderDetail {
 	private LocalTime orderTime;
 	private String orderStatus;
 	private String paymentMode;
+	private Double totalPrice;
 	
 	@OneToOne
 	@JoinColumn(name="user_id")

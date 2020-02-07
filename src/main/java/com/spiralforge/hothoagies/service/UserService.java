@@ -1,5 +1,6 @@
 package com.spiralforge.hothoagies.service;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,7 +38,10 @@ public interface UserService {
 	 */
 	Optional<User> getUserByUserId(Long userId);
 
-	public List<OrderDetailResponseDto> getOrderHistory(Long userId) throws UserNotFoundException, OrderNotFoundException;
-	
+	public List<OrderDetailResponseDto> getOrderHistory(Long userId)
+			throws UserNotFoundException, OrderNotFoundException;
+
+	LocalTime getEta(OrderDetail orderDetail);
+
 	public List<CartResponseDto> addToCart(CartRequestDto cartRequestDto);
 }

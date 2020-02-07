@@ -5,7 +5,6 @@ import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -62,7 +61,7 @@ public class UserController {
 	 * @throws BeansException
 	 * @throws UserNotFoundException expose a message when user is not found
 	 */
-	@PostMapping()
+	@PostMapping("/{userId}/order")
 	public ResponseEntity<OrderResponseDto> placeOrder(@PathVariable("userId") Long userId,
 			@RequestBody OrderRequestDto orderRequestDto) throws ValidationFailedException {
 
@@ -75,7 +74,8 @@ public class UserController {
 				orderResponseDto.setMessage(ApiConstant.NO_ELEMENT_FOUND);
 				return new ResponseEntity<>(orderResponseDto, HttpStatus.NO_CONTENT);
 			} else {
-				BeanUtils.copyProperties(orderDetail, orderResponseDto);
+				orderResponseDto.setOrderId(orderDetail.getOrderDetailId());
+				orderResponseDto.setEta(userService.getEta(orderDetail));
 				orderResponseDto.setStatusCode(ApiConstant.SUCCESS_CODE);
 				orderResponseDto.setMessage(ApiConstant.SUCCESS);
 				return new ResponseEntity<>(orderResponseDto, HttpStatus.OK);
@@ -103,6 +103,5 @@ public class UserController {
 		List<OrderDetailResponseDto> orderDetailList = userService.getOrderHistory(userId);
 		return new ResponseEntity<>(orderDetailList, HttpStatus.OK);
 	}
-	
-	
+
 }

@@ -19,23 +19,23 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CartItem {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long cartItemId;
 	private Integer quantity;
-	
+
 	@OneToOne
-	@JoinColumn(name="item_id")
+	@JoinColumn(name = "item_id")
 	private Item item;
-	
+
 	@JsonIgnore
 	@ManyToOne
-	@JoinColumn(name="user_id")
+	@JoinColumn(name = "user_id")
 	private User user;
-	
+
 	@JsonIgnore
 	@ManyToOne
-	@JoinColumn(name="order_detail_id")
+	@JoinColumn(name = "order_detail_id", nullable = true)
 	private OrderDetail orderDetail;
 }

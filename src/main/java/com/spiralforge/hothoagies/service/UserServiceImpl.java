@@ -1,5 +1,6 @@
 package com.spiralforge.hothoagies.service;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +17,7 @@ import com.spiralforge.hothoagies.dto.CartRequestDto;
 import com.spiralforge.hothoagies.dto.CartResponseDto;
 import com.spiralforge.hothoagies.dto.OrderDetailResponseDto;
 import com.spiralforge.hothoagies.dto.OrderRequestDto;
+import com.spiralforge.hothoagies.entity.Item;
 import com.spiralforge.hothoagies.entity.OrderDetail;
 import com.spiralforge.hothoagies.entity.User;
 import com.spiralforge.hothoagies.exception.OrderNotFoundException;
@@ -23,9 +25,11 @@ import com.spiralforge.hothoagies.exception.UserNotFoundException;
 import com.spiralforge.hothoagies.exception.ValidationFailedException;
 import com.spiralforge.hothoagies.payment.Payment;
 import com.spiralforge.hothoagies.payment.PaymentFactory;
+import com.spiralforge.hothoagies.repository.ItemRepository;
 import com.spiralforge.hothoagies.repository.OrderDetailRepository;
 import com.spiralforge.hothoagies.repository.UserRepository;
 import com.spiralforge.hothoagies.util.ApiConstant;
+import com.spiralforge.hothoagies.util.Utility;
 
 /**
  * @author Sujal.
@@ -44,6 +48,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	UserRepository userRepository;
+
+	@Autowired
+	ItemRepository itemRepository;
 
 	@Autowired
 	private PaymentFactory paymentFactory;
@@ -130,11 +137,15 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<CartResponseDto> addToCart(CartRequestDto cartRequestDto) {
-		cartRequestDto.getItems().forEach(item->{
-			Long itemId=item.getItemId();
-			
+		cartRequestDto.getItems().forEach(item -> {
+			Long itemId = item.getItemId();
+			Optional<Item> optionalItem = itemRepository.findById(itemId);
+			Double itemPrice = optionalItem.get().getPrice();
+			Double priceCalculation = Utility.getTotalPriceInCart(cartRequestDto.getQuantity(), itemPrice);
 		});
 		return null;
 	}
+
+	
 
 }

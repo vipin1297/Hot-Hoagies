@@ -35,9 +35,8 @@ public class CartItemServiceImpl implements CartItemService {
 	 */
 	@Transactional
 	@Override
-	public void saveCartItem(User user, OrderDetail orderDetail) {
-		List<CartItem> cartItemList = getCartItemByUser(user);
-		if (Objects.isNull(cartItemList) && cartItemList.isEmpty()) {
+	public void saveCartItem(User user, OrderDetail orderDetail, List<CartItem> cartItemList ) {
+		if (!Objects.isNull(cartItemList) || !cartItemList.isEmpty()) {
 			cartItemList.stream().map(cartItem -> {
 				cartItem.setOrderDetail(orderDetail);
 				return cartItem;
