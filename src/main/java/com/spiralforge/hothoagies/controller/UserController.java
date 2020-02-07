@@ -1,4 +1,5 @@
 package com.spiralforge.hothoagies.controller;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -21,13 +22,12 @@ import com.spiralforge.hothoagies.dto.OrderDetailResponseDto;
 import com.spiralforge.hothoagies.dto.OrderRequestDto;
 import com.spiralforge.hothoagies.dto.OrderResponseDto;
 import com.spiralforge.hothoagies.entity.OrderDetail;
+import com.spiralforge.hothoagies.exception.OrderNotFoundException;
 import com.spiralforge.hothoagies.exception.UserNotFoundException;
 import com.spiralforge.hothoagies.exception.ValidationFailedException;
 import com.spiralforge.hothoagies.service.UserService;
 import com.spiralforge.hothoagies.util.ApiConstant;
 import com.spiralforge.hothoagies.util.OrderValidator;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * This controller is having Order history functionality.
@@ -37,19 +37,17 @@ import lombok.extern.slf4j.Slf4j;
  */
 @RequestMapping("/users")
 @RestController
-@Slf4j
 @CrossOrigin(allowedHeaders = { "*", "*/" }, origins = { "*", "*/" })
 public class UserController {
-	
+
 	/**
 	 * The Constant log.
 	 */
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-
 	@Autowired
 	private OrderValidator<Long, OrderRequestDto> orderValidator;
-	
+
 	@Autowired
 	private UserService userService;
 
@@ -61,7 +59,7 @@ public class UserController {
 	 * 
 	 * @param loginRequestDto which takes input as a mobile number
 	 * @return LoginResponseDto includes all particulars of the user
-	 * @throws BeansException 
+	 * @throws BeansException
 	 * @throws UserNotFoundException expose a message when user is not found
 	 */
 	@PostMapping()
@@ -88,12 +86,23 @@ public class UserController {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
-	
+
+	/**
+	 * @author Sri Keerthna
+	 * @since 2020-02-07. In this method using userId order history will be shown.
+	 * @param userId userId of an user.
+	 * @return List of oredrs placed by user.
+	 * @throws UserNotFoundException  if user is not there it will thrown an error.
+	 * @throws OrderNotFoundException if orders not found for that particular user
+	 *                                it will throw this error.
+	 */
 	@GetMapping("/{userId}/orders")
 	public ResponseEntity<List<OrderDetailResponseDto>> getOrderHistory(@PathVariable Long userId)
-			throws UserNotFoundException {
-		logger.info("Entered into categoryList method in controller");
+			throws UserNotFoundException, OrderNotFoundException {
+		logger.info("Entered into getOrderHistory method in controller");
 		List<OrderDetailResponseDto> orderDetailList = userService.getOrderHistory(userId);
 		return new ResponseEntity<>(orderDetailList, HttpStatus.OK);
-}
+	}
+	
+	
 }

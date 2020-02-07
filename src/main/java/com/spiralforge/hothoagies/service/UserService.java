@@ -3,11 +3,15 @@ package com.spiralforge.hothoagies.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.spiralforge.hothoagies.dto.CartRequestDto;
+import com.spiralforge.hothoagies.dto.CartResponseDto;
 import com.spiralforge.hothoagies.dto.OrderDetailResponseDto;
 import com.spiralforge.hothoagies.dto.OrderRequestDto;
 import com.spiralforge.hothoagies.entity.OrderDetail;
 import com.spiralforge.hothoagies.entity.User;
+import com.spiralforge.hothoagies.exception.OrderNotFoundException;
 import com.spiralforge.hothoagies.exception.UserNotFoundException;
+import com.spiralforge.hothoagies.exception.ValidationFailedException;
 
 /**
  * @author Sujal.
@@ -23,7 +27,7 @@ public interface UserService {
 	 * @return
 	 * @throws InvalidUpiIdException
 	 */
-	OrderDetail placeOrder(Long userId, OrderRequestDto orderRequestDto);
+	OrderDetail placeOrder(Long userId, OrderRequestDto orderRequestDto) throws ValidationFailedException;
 
 	/**
 	 * This method is used to get user by Id.
@@ -33,5 +37,7 @@ public interface UserService {
 	 */
 	Optional<User> getUserByUserId(Long userId);
 
-	public List<OrderDetailResponseDto> getOrderHistory(Long userId) throws UserNotFoundException;
+	public List<OrderDetailResponseDto> getOrderHistory(Long userId) throws UserNotFoundException, OrderNotFoundException;
+	
+	public List<CartResponseDto> addToCart(CartRequestDto cartRequestDto);
 }

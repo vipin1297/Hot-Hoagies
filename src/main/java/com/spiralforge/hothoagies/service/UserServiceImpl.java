@@ -4,21 +4,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.spiralforge.hothoagies.constants.ApplicationConstants;
+import com.spiralforge.hothoagies.dto.CartItemDetailsDto;
+import com.spiralforge.hothoagies.dto.CartRequestDto;
+import com.spiralforge.hothoagies.dto.CartResponseDto;
 import com.spiralforge.hothoagies.dto.OrderDetailResponseDto;
 import com.spiralforge.hothoagies.dto.OrderRequestDto;
 import com.spiralforge.hothoagies.entity.OrderDetail;
 import com.spiralforge.hothoagies.entity.User;
+import com.spiralforge.hothoagies.exception.OrderNotFoundException;
 import com.spiralforge.hothoagies.exception.UserNotFoundException;
+import com.spiralforge.hothoagies.exception.ValidationFailedException;
+import com.spiralforge.hothoagies.payment.Payment;
+import com.spiralforge.hothoagies.payment.PaymentFactory;
 import com.spiralforge.hothoagies.repository.OrderDetailRepository;
 import com.spiralforge.hothoagies.repository.UserRepository;
+import com.spiralforge.hothoagies.util.ApiConstant;
 
 /**
- * @author Sri Keerthna.
+ * @author Sujal.
  * @since 2020-02-07.
  */
 @Service
@@ -27,28 +37,51 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	OrderDetailRepository orderDetailRepository;
 
+	Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+
+	@Autowired
+	private OrderDetailService orderDetailService;
+
 	@Autowired
 	UserRepository userRepository;
 
+	@Autowired
+	private PaymentFactory paymentFactory;
+
+	/**
+	 * @author Sri Keerthna
+	 * @since 2020-02-07. In this method using userId order history will be shown.
+	 * @param userId userId of an user.
+	 * @return List of oredrs placed by user.
+	 * @throws UserNotFoundException  if user is not there it will thrown an error.
+	 * @throws OrderNotFoundException if orders not found for that particular user
+	 *                                it will throw this error.
+	 */
 	@Override
-	public List<OrderDetailResponseDto> getOrderHistory(Long userId) throws UserNotFoundException {
+	public List<OrderDetailResponseDto> getOrderHistory(Long userId)
+			throws UserNotFoundException, OrderNotFoundException {
 		Optional<User> user = userRepository.findById(userId);
 		if (!user.isPresent()) {
+			logger.error("user not found");
 			throw new UserNotFoundException(ApplicationConstants.USER_NOTFOUND_MESSAGE);
 		}
 		List<OrderDetailResponseDto> responseDto = new ArrayList<>();
+		List<CartItemDetailsDto> cartItemDetailsDtoList = new ArrayList<>();
 		List<OrderDetail> orderDetail = orderDetailRepository.findOrderDetailByUser(user.get());
+		if (orderDetail.isEmpty()) {
+			logger.error("order not found for that user");
+			throw new OrderNotFoundException(ApplicationConstants.ORDER_NOTFOUND_MESSAGE);
+		}
 		orderDetail.forEach(list -> {
 			OrderDetailResponseDto orderDetailResponseDto = new OrderDetailResponseDto();
-			BeanUtils.copyProperties(orderDetail, orderDetailResponseDto);
+			CartItemDetailsDto cartItemDetailsDto = new CartItemDetailsDto();
+			BeanUtils.copyProperties(list, cartItemDetailsDto);
+			cartItemDetailsDtoList.add(cartItemDetailsDto);
+			BeanUtils.copyProperties(list, orderDetailResponseDto);
 			responseDto.add(orderDetailResponseDto);
 		});
 		return responseDto;
 	}
-	
-	
-	// @Autowired
-	// private PaymentFactory paymentFactory;
 
 	/**
 	 * @author Sujal
@@ -64,13 +97,21 @@ public class UserServiceImpl implements UserService {
 	 * @throws InvalidUpiIdException
 	 */
 	@Override
-	public OrderDetail placeOrder(Long userId, OrderRequestDto orderRequestDto) {
+	public OrderDetail placeOrder(Long userId, OrderRequestDto orderRequestDto) throws ValidationFailedException {
 		OrderDetail orderDetail = null;
 		Optional<User> user = getUserByUserId(userId);
-//		if (user.isPresent()) {
-//		} else {
-//			logger.error("inside user not found");
-//		}
+		if (user.isPresent()) {
+			Payment payment = paymentFactory.getPaymentMethod(orderRequestDto.getPaymentMode());
+			if (payment.pay(orderRequestDto.getUpiId(), user.get())) {
+				logger.info("upi is valid");
+				orderDetail = orderDetailService.saveOrderDetail(user.get(), orderRequestDto);
+			} else {
+				logger.error("upi is not valid");
+				throw new ValidationFailedException(ApiConstant.INVALID_UPI);
+			}
+		} else {
+			logger.error("inside user not found");
+		}
 		return orderDetail;
 	}
 
@@ -85,6 +126,15 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Optional<User> getUserByUserId(Long userId) {
 		return userRepository.findById(userId);
+	}
+
+	@Override
+	public List<CartResponseDto> addToCart(CartRequestDto cartRequestDto) {
+		cartRequestDto.getItems().forEach(item->{
+			Long itemId=item.getItemId();
+			
+		});
+		return null;
 	}
 
 }
