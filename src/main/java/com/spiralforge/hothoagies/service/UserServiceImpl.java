@@ -10,22 +10,29 @@ import org.springframework.stereotype.Service;
 import com.spiralforge.hothoagies.dto.OrderRequestDto;
 import com.spiralforge.hothoagies.entity.OrderDetail;
 import com.spiralforge.hothoagies.entity.User;
+import com.spiralforge.hothoagies.exception.ValidationFailedException;
+import com.spiralforge.hothoagies.payment.Payment;
+import com.spiralforge.hothoagies.payment.PaymentFactory;
 import com.spiralforge.hothoagies.repository.UserRepository;
+import com.spiralforge.hothoagies.util.ApiConstant;
 
 /**
- * @author Sri Keerthna.
- * @since 2020-02-05.
+ * @author Sujal.
+ * @since 2020-02-07.
  */
 @Service
 public class UserServiceImpl implements UserService {
 
 	Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+	
+	@Autowired
+	private OrderDetailService orderDetailService;
 
 	@Autowired
 	private UserRepository userRepository;
 
-//	@Autowired
-//	private PaymentFactory paymentFactory;
+	@Autowired
+	private PaymentFactory paymentFactory;
 
 	/**
 	 * @author Sujal
@@ -41,13 +48,21 @@ public class UserServiceImpl implements UserService {
 	 * @throws InvalidUpiIdException
 	 */
 	@Override
-	public OrderDetail placeOrder(Long userId, OrderRequestDto orderRequestDto) {
+	public OrderDetail placeOrder(Long userId, OrderRequestDto orderRequestDto) throws ValidationFailedException {
 		OrderDetail orderDetail = null;
 		Optional<User> user = getUserByUserId(userId);
-//		if (user.isPresent()) {
-//		} else {
-//			logger.error("inside user not found");
-//		}
+		if (user.isPresent()) {
+			Payment payment = paymentFactory.getPaymentMethod(orderRequestDto.getPaymentMode());
+			if (payment.pay(orderRequestDto.getUpiId(), user.get())) {
+				logger.info("upi is valid");
+				orderDetail = orderDetailService.saveOrderDetail(user.get(), orderRequestDto);
+			} else {
+				logger.error("upi is not valid");
+				throw new ValidationFailedException(ApiConstant.INVALID_UPI);
+			}
+		} else {
+			logger.error("inside user not found");
+		}
 		return orderDetail;
 	}
 

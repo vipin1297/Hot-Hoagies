@@ -26,6 +26,9 @@ public class OrderDetailServiceImpl implements OrderDetailService {
 
 	@Autowired
 	private OrderDetailRepository orderDetailRepository;
+	
+	@Autowired
+	private CartItemService cartItemService;
 
 	/**
 	 * @author Sujal
@@ -40,21 +43,18 @@ public class OrderDetailServiceImpl implements OrderDetailService {
 	@Override
 	public OrderDetail saveOrderDetail(User user, OrderRequestDto orderRequestDto) {
 		logger.info("inside order place method");
+		OrderDetail orderDetail1=null;
 		OrderDetail orderDetail = new OrderDetail();
 		BeanUtils.copyProperties(orderRequestDto, orderDetail);
 		orderDetail.setOrderStatus(ApplicationConstants.CONFIRMED_STATUS);
 		orderDetail.setOrderDate(LocalDate.now());
 		orderDetail.setOrderTime(LocalTime.now());
 		orderDetail.setUser(user);
-		orderDetailRepository.save(orderDetail);
+		orderDetail1=orderDetailRepository.save(orderDetail);
 
-		if (!Objects.isNull(orderDetail))
-			saveCartItem(orderDetail);
+		if (!Objects.isNull(orderDetail1))
+			cartItemService.saveCartItem(user, orderDetail1);
 		return orderDetail;
-	}
-	
-	private CartItem saveCartItem(OrderDetail orderDetail) {
-		return null;
 	}
 
 }

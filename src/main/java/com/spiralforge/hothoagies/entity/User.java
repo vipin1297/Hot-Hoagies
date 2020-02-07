@@ -26,5 +26,5 @@ public class User {
 	private Long mobileNumber;
 	@Enumerated(EnumType.STRING)
 	private Role role;
-
+	private String upiId;
 }

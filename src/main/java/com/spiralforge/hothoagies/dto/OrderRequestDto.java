@@ -9,7 +9,6 @@ import lombok.Setter;
 @Getter
 public class OrderRequestDto implements Serializable{
 	
-	private Long cartId;
 	private String paymentMode;
-
+	private String upiId;
 }

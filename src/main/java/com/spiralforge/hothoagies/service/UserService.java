@@ -5,6 +5,7 @@ import java.util.Optional;
 import com.spiralforge.hothoagies.dto.OrderRequestDto;
 import com.spiralforge.hothoagies.entity.OrderDetail;
 import com.spiralforge.hothoagies.entity.User;
+import com.spiralforge.hothoagies.exception.ValidationFailedException;
 
 /**
  * @author Sujal.
@@ -21,7 +22,7 @@ public interface UserService {
 	 * @return
 	 * @throws InvalidUpiIdException
 	 */
-	OrderDetail placeOrder(Long userId, OrderRequestDto orderRequestDto);
+	OrderDetail placeOrder(Long userId, OrderRequestDto orderRequestDto) throws ValidationFailedException;
 
 	/**
 	 * This method is used to get user by Id. 

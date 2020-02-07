@@ -9,6 +9,4 @@ import com.spiralforge.hothoagies.entity.User;
 @Repository
 public interface OrderDetailRepository extends JpaRepository<OrderDetail, Long> {
 
-	User findBymobileNumber(Long mobileNumber);
-
 }
