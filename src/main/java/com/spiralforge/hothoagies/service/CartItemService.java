@@ -18,9 +18,8 @@ public interface CartItemService {
 	 * @param orderRequestDto
 	 * @return
 	 */
-	void saveCartItem(User user, OrderDetail orderDetail1);
+	void saveCartItem(User user, OrderDetail orderDetail, List<CartItem> cartItemList);
 
 	List<CartItem> getCartItemByUser(User user);
-
 
 }

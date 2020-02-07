@@ -9,6 +9,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.aspectj.weaver.tools.Trace;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,6 +34,6 @@ public class CartItem {
 	private User user;
 	
 	@ManyToOne
-	@JoinColumn(name="order_detail_id")
+	@JoinColumn(name="order_detail_id", nullable = true)
 	private OrderDetail orderDetail;
 }

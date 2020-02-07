@@ -1,5 +1,6 @@
 package com.spiralforge.hothoagies.service;
 
+import java.time.LocalTime;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -78,5 +79,12 @@ public class UserServiceImpl implements UserService {
 	public Optional<User> getUserByUserId(Long userId) {
 		return userRepository.findById(userId);
 	}
+	
+	@Override
+	public LocalTime getEta(OrderDetail orderDetail) {
+		return orderDetail.getOrderTime().plusHours(1);
+		
+	}
+
 
 }

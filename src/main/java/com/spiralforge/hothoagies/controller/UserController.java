@@ -55,7 +55,7 @@ public class UserController {
 	 * @throws BeansException 
 	 * @throws UserNotFoundException expose a message when user is not found
 	 */
-	@PostMapping()
+	@PostMapping("/{userId}/order")
 	public ResponseEntity<OrderResponseDto> placeOrder(@PathVariable("userId") Long userId,
 			@RequestBody OrderRequestDto orderRequestDto) throws ValidationFailedException {
 
@@ -68,7 +68,8 @@ public class UserController {
 				orderResponseDto.setMessage(ApiConstant.NO_ELEMENT_FOUND);
 				return new ResponseEntity<>(orderResponseDto, HttpStatus.NO_CONTENT);
 			} else {
-				BeanUtils.copyProperties(orderDetail, orderResponseDto);
+				orderResponseDto.setOrderId(orderDetail.getOrderDetailId());
+				orderResponseDto.setEta(userService.getEta(orderDetail));
 				orderResponseDto.setStatusCode(ApiConstant.SUCCESS_CODE);
 				orderResponseDto.setMessage(ApiConstant.SUCCESS);
 				return new ResponseEntity<>(orderResponseDto, HttpStatus.OK);

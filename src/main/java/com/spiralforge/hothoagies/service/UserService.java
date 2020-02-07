@@ -1,5 +1,6 @@
 package com.spiralforge.hothoagies.service;
 
+import java.time.LocalTime;
 import java.util.Optional;
 
 import com.spiralforge.hothoagies.dto.OrderRequestDto;
@@ -31,5 +32,7 @@ public interface UserService {
 	 * @return
 	 */
 	Optional<User> getUserByUserId(Long userId);
+
+	LocalTime getEta(OrderDetail orderDetail);
 	
 }

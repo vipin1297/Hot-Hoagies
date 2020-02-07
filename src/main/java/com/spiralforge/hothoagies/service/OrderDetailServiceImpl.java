@@ -2,6 +2,7 @@ package com.spiralforge.hothoagies.service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Objects;
 
 import javax.transaction.Transactional;
@@ -18,6 +19,7 @@ import com.spiralforge.hothoagies.entity.CartItem;
 import com.spiralforge.hothoagies.entity.OrderDetail;
 import com.spiralforge.hothoagies.entity.User;
 import com.spiralforge.hothoagies.repository.OrderDetailRepository;
+import com.spiralforge.hothoagies.util.Utility;
 
 @Service
 public class OrderDetailServiceImpl implements OrderDetailService {
@@ -26,7 +28,7 @@ public class OrderDetailServiceImpl implements OrderDetailService {
 
 	@Autowired
 	private OrderDetailRepository orderDetailRepository;
-	
+
 	@Autowired
 	private CartItemService cartItemService;
 
@@ -43,18 +45,35 @@ public class OrderDetailServiceImpl implements OrderDetailService {
 	@Override
 	public OrderDetail saveOrderDetail(User user, OrderRequestDto orderRequestDto) {
 		logger.info("inside order place method");
-		OrderDetail orderDetail1=null;
-		OrderDetail orderDetail = new OrderDetail();
-		BeanUtils.copyProperties(orderRequestDto, orderDetail);
-		orderDetail.setOrderStatus(ApplicationConstants.CONFIRMED_STATUS);
-		orderDetail.setOrderDate(LocalDate.now());
-		orderDetail.setOrderTime(LocalTime.now());
-		orderDetail.setUser(user);
-		orderDetail1=orderDetailRepository.save(orderDetail);
+		OrderDetail orderDetail1 = null;
+		List<CartItem> cartItems = cartItemService.getCartItemByUser(user);
 
-		if (!Objects.isNull(orderDetail1))
-			cartItemService.saveCartItem(user, orderDetail1);
-		return orderDetail;
+		if (!cartItems.isEmpty()) {
+			OrderDetail orderDetail = new OrderDetail();
+			BeanUtils.copyProperties(orderRequestDto, orderDetail);
+			orderDetail.setOrderStatus(ApplicationConstants.CONFIRMED_STATUS);
+			orderDetail.setOrderDate(LocalDate.now());
+			orderDetail.setOrderTime(LocalTime.now());
+			orderDetail.setTotalPrice(getTotalPrice(cartItems));
+			orderDetail.setUser(user);
+			orderDetail1 = orderDetailRepository.save(orderDetail);
+
+			if (!Objects.isNull(orderDetail1))
+				cartItemService.saveCartItem(user, orderDetail1, cartItems);
+		}
+		return orderDetail1;
 	}
-
+	
+	/**
+	 * @author Sujal
+	 *
+	 *         Method is used to count the total price of the selected items.
+	 * 
+	 * @param orderRequestDto
+	 * @return total price
+	 */
+	private Double getTotalPrice(List<CartItem> cartItems) {
+		return cartItems.stream().mapToDouble(ordeItem ->Utility.getTotalPrice(ordeItem.getQuantity(), ordeItem.getItem().getPrice())).sum();
+	
+	}
 }
